@@ -1,39 +1,38 @@
-apiVersion: v1
-kind: List
-metadata:
-  name: selenium-node-firefox
-items:
-- apiVersion: v1
-  kind: ImageStream
+  apiVersion: v1
+  kind: List
   metadata:
-    name: selenium-node-firefox
-  spec:
-    dockerImageRepository: ""
-    tags:
-      - name: latest
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    name: selenium-node-firefox
-  spec:
-    nodeSelector: null
-    output:
-      to:
-        kind: ImageStreamTag
-        name: 'selenium-node-firefox:3.6.0'
-    postCommit: {}
-    resources: {}
-    runPolicy: Serial
-    source:
-      contextDir: selenium-node-firefox
-      sourceSecret:
-        name: jos-openshift-builder
-      git:
-        uri: 'ssh://git@git.belastingdienst.nl:7999/~wolfj09/selenium-grid-openshift.git'
-      type: Git
-    strategy:
-      dockerStrategy: {}
-      type: Docker
-    triggers:
-      - type: ConfigChange
-  status: {}
+    name: juice-shop
+  items:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      name: juice-shop
+    spec:
+      dockerImageRepository: ""
+      tags:
+        - name: latest
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: juice-shop
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: 'juice-shop:latest'
+      postCommit: {}
+      resources: {}
+      runPolicy: Serial
+      source:
+        sourceSecret:
+          name: jos-openshift-builder
+        git:
+          uri: 'ssh://git@git.belastingdienst.nl:7999/~wolfj09/juice-shop-openshift.git'
+        type: Git
+      strategy:
+        dockerStrategy: {}
+        type: Docker
+      triggers:
+        - type: ConfigChange
+    status: {}

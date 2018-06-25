@@ -1,0 +1,7 @@
+ctfFramework: FBCTF
+juiceShopUrl: http://juice-shop-bdctf.cloudapps.belastingdienst.nl
+ctfKey: https://devtools.belastingdienst.nl/bitbucket/users/wolfj09/repos/juice-shop-openshift/raw/ctf.key?at=refs%2Fheads%2Fmaster
+ctfKey: https://raw.githubusercontent.com/bkimminich/juice-shop/master/ctf.key # can also be actual key instead URL
+countryMapping: https://devtools.belastingdienst.nl/bitbucket/users/wolfj09/repos/juice-shop-openshift/raw/fbctf.yml?at=refs%2Fheads%2Fmaster
+insertHints: free
+insertHintUrls: free

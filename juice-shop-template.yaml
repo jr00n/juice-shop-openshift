@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: selenium-node-firefox
+  annotations:
+    description: "Selenium Node with Firefox browser"
+    iconClass: "icon-selenium"
+    tags: "selenium,node,firefox"
+objects:
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: selenium-node-firefox
+  spec:
+    triggers:
+    - type: ConfigChange
+      configChange: {}
+    source:
+      contextDir: selenium-node-firefox
+      type: Git
+      git:
+        uri: https://github.com/jr00n/selenium-os
+        ref: master
+    strategy:
+      type: Docker
+      DockerStrategy: {}
+    output:
+      to:
+        kind: ImageStreamTag
+        name: selenium-node-firefox:latest
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: selenium-node-firefox
+  spec:
+    dockerImageRepository: ''
+    tags:
+    - name: latest
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: selenium-node-firefox
+    labels:
+      deploymentConfig: selenium-node-firefox
+  spec:
+    strategy:
+      type: Recreate
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - selenium-node-firefox
+        from:
+          kind: ImageStreamTag
+          name: selenium-node-firefox:latest
+    - type: ConfigChange
+    replicas: 1
+    selector:
+      browser: firefox
+    template:
+      metadata:
+        labels:
+          browser: firefox
+      spec:
+        containers:
+        - name: selenium-node-firefox
+          image: selenium-node-firefox
+          ports:
+          - name: hub
+            containerPort: 4444
+            protocol: TCP
+          - name: node
+            containerPort: 5555
+            protocol: TCP
+          env:
+          - name: JAVA_OPTS
+            value: "-Xmx512m"
+          - name: SE_OPTS
+            value: ''
+          - name: HUB_PORT_4444_TCP_ADDR
+            value: selenium-hub
+          - name: HUB_PORT_4444_TCP_PORT
+            value: '4444'
+          resources: {}
+          terminationMessagePath: "/dev/termination-log"
+          imagePullPolicy: Always
+          securityContext:
+            capabilities: {}
+            privileged: false
+        restartPolicy: Always
+        dnsPolicy: ClusterFirst
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: selenium-node-firefox
+  spec:
+    ports:
+    - name: node-port
+      port: 5555
+      targetPort: 5555
+      protocol: TCP
+    - name: node-port-grid
+      port: 4444
+      targetPort: 4444
+      protocol: TCP
+    selector:
+      browser: firefox
